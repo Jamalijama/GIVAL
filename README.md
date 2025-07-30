@@ -1,7 +1,7 @@
 # GIVAL
 General Intelligence Framework to Predict Virus Adaptation based on Genome Language Model
 
-Note: Due to the strict requirements of GitHub on the number and size of uploaded files, we have only uploaded the core code for using GIVAL on GitHub. Meanwhile, the package `vBERT_and_GIVAL/vBERT_optimized`, `vBERT_and_GIVAL/GIVAL/csv_file` and `vBERT_and_GIVAL/GIVAL/jieba4` need to be downloaded from Zenodo. If other parts of the code and data are needed, they also need to be downloaded from Zenodo. Therefore, we strongly recommend downloading the complete version of our code and data from Zenodo. There are two versions available on Zenodo: an initial version and a revised new version, with their respective DOIs as follows. Initial version: https://10.5281/zenodo.14233092; new version: 10.5281/zenodo.16566992.
+Note: Due to the strict requirements of GitHub on the number and size of uploaded files, we have only uploaded the core code for using GIVAL on GitHub. Meanwhile, the package `vBERT_and_GIVAL/vBERT_optimized`, `vBERT_and_GIVAL/GIVAL/csv_file` and `vBERT_and_GIVAL/GIVAL/jieba4` need to be downloaded from Zenodo. If other parts of the code and data are needed, they also need to be downloaded from Zenodo. Therefore, we strongly recommend downloading the complete version of our code and data from Zenodo. There are two versions available on Zenodo: an initial version and a revised new version, with their respective DOIs as follows. Initial version: https://10.5281/zenodo.14233092; new version: https://10.5281/zenodo.16566992.
 
 Note: In the dataset or program files, 'country' represents country or area.
 
