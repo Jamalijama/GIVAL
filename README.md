@@ -1,11 +1,13 @@
 # GIVAL
-General Intelligence to predict Virus Adaptation based on genome Language model
+General Intelligence Framework to Predict Virus Adaptation based on Genome Language Model
 
-Data and models need to be downloaded from Zenodo (https://10.5281/zenodo.14233092) and placed to the corresponding folders before run the scripts in GitHub (https://github.com/Jamalijama/GIVAL). Scripts on GitHub only included codes related to GIVAL framework and other script packages also need to be downloaded from Zenodo.
+Note: Due to the strict requirements of GitHub on the number and size of uploaded files, we have only uploaded the core code for using GIVAL on GitHub. Meanwhile, the package `vBERT_and_GIVAL/vBERT_optimized`, ``vBERT_and_GIVAL/GIVAL/csv_file` and `vBERT_and_GIVAL/GIVAL/jieba4` need to be downloaded from Zenodo. If other parts of the code and data are needed, they also need to be downloaded from Zenodo. Therefore, we strongly recommend downloading the complete version of our code and data from Zenodo. There are two versions available on Zenodo: an initial version and a revised new version, with their respective DOIs as follows. Initial version: https://10.5281/zenodo.14233092; new version: 10.5281/zenodo.16566992.
 
 Note: In the dataset or program files, 'country' represents country or area.
 
-This package provides an pipeline of data parsing, tokenization and segmentation of gene sequences, pretraining and embedding evaluation of vBERT and other language models, analysis of immune escape and receptor binding based on the vBERT embedding, establishment of GIVAl based on vBERT and predicting of IVA HA RBD and CoV Spike RBD sequences.
+The following is the operation process for all the code.
+
+This package provides an pipeline of data parsing, tokenization and segmentation of gene sequences, pretraining and embedding evaluation of vBERT and other language models, analysis of immune escape and receptor binding based on the vBERT embedding, establishment of GIVAl based on vBERT and predicting of IAV HA RBD and CoV Spike RBD sequences.
 
 ## Creating embedding npy file for the following steps
 Please extract embedding with the following commands before other steps.
@@ -21,13 +23,17 @@ Please extract embedding with the following commands before other steps.
   --max_seq_length=256 \
   --batch_size=8
      ```
-In the comannds above, 'input' should be replaced with the path and input txt file name.
+In the commands above, 'input' should be replaced with the path and input txt file name.
 The 'dirr' and 'file_lst' in python file `vBERT_and_GIVAL/jsonl2npy.py` should be replaced with the path and input txt file name, respectively, and the following commands are ultilized to create the npy embedding file.
     ```bash
     python vBERT_and_GIVAL/jsonl2npy.py \
      ```
 Following the above commands, the npy files of embedding of the following txt files need to be created.
-`vBERT_and_GIVAL/vBERT_optimized/test_sample/try_AIV_sample_token_onlywith_HMM_CDS_5_NP_human_avian1000_38w.txt`, `vBERT_and_GIVAL/embedding_evaluation/HA_testset_for_embedding_evaluation/try_AIV_sample_token_onlywith_HMM_CDS_4_HA_serotype2000_38w.txt`, `vBERT_and_GIVAL/embedding_evaluation/Spike_RBD_testset_for_embedding_evaluation/try_Spike_sample_token_onlywith_HMM_seg_RBD_variant1000_38w_256cut_HMM.txt`, every txt file in `vBERT_and_GIVAL/GIVAL/txt_npy_file`, `vBERT_and_GIVAL/GIVAL/test_set/token_onlywith_HMM_HA_test_set.txt`, `vBERT_and_GIVAL/GIVAL/test_set/test_canine/token_onlywith_HMM_other_host.txt`, `immune_escape_and_binding_analysis/DMS_dataset_analysis/Spike_RBD_binding/RBD_mutants_38w_HMM.txt`, `immune_escape_and_binding_analysis/DMS_dataset_analysis/HA_preference/HA_H1_mutants_38w_HMM.txt`, `immune_escape_and_binding_analysis/IVA_HA_vaccine_evaluate/HA_H1N1_after2021_with_WHOref_38w_HMM.txt`, `immune_escape_and_binding_analysis/IVA_HA_vaccine_evaluate/HA_H3N2_after2021_with_WHOref_38w_HMM.txt`.
+`vBERT_and_GIVAL/vBERT_optimized/test_sample/try_AIV_sample_token_onlywith_HMM_CDS_5_NP_human_avian1000_38w.txt`, `vBERT_and_GIVAL/embedding_evaluation/HA_testset_for_embedding_evaluation/try_AIV_sample_token_onlywith_HMM_CDS_4_HA_serotype2000_38w.txt`, `vBERT_and_GIVAL/embedding_evaluation/Spike_RBD_testset_for_embedding_evaluation/try_Spike_sample_token_onlywith_HMM_seg_RBD_variant1000_38w_256cut_HMM.txt`, every txt file in `vBERT_and_GIVAL/GIVAL/txt_npy_file`, `vBERT_and_GIVAL/GIVAL/test_set/token_onlywith_HMM_HA_test_set.txt`, `vBERT_and_GIVAL/GIVAL/test_set/test_canine/token_onlywith_HMM_other_host.txt`, `immune_escape_and_binding_analysis/DMS_dataset_analysis/Spike_RBD_binding/RBD_mutants_38w_HMM.txt`, `immune_escape_and_binding_analysis/DMS_dataset_analysis/HA_preference/HA_H1_mutants_38w_HMM.txt`, `immune_escape_and_binding_analysis/IVA_HA_vaccine_evaluate/HA_H1N1_after2021_with_WHOref_38w_HMM.txt`, `immune_escape_and_binding_analysis/IVA_HA_vaccine_evaluate/HA_H3N2_after2021_with_WHOref_38w_HMM.txt`,
+`vBERT_and_GIVAL/GIVAL/test_set/test_H5N1/create_new_seq_from_Texas_ref_seq_and_bayes_30000.txt`,
+`vBERT_and_GIVAL/GIVAL/test_set/test_H5N1/first_bayes_mutate_back/first_bayes_30000_result_human_low_FC_prob_less_055_mutate_back.txt`,
+`vBERT_and_GIVAL/GIVAL/test_set/test_H5N1/first_bayes_mutate_back/other_18_site_mutate_back/top_12_sites_based_on_first_bayes_30000_seq.txt`,
+`vBERT_and_GIVAL/GIVAL/test_set/test_H5N1/first_bayes_mutate_back/other_22_site_mutate_back/top_8_sites_based_on_first_bayes_30000_seq.txt`,
 
 ## Data parsing
 
@@ -143,7 +149,7 @@ The parameters of HMM tokenizer of virtual dataset was also calculated with the 
     python immune_escape_and_binding_analysis/IVA_HA_vaccine_evaluate/padding_dimensional_reduction_clustering_HA_H3N2.py
     ```
 
-2. Run `immune_escape_and_binding_analysis/DMS_dataset_analysis/HA_preference/padding_dimensional_reduction_clustering_HA_H1_mutants.py` and `immune_escape_and_binding_analysis/DMS_dataset_analysis/HA_preference/KW_test_PCA1_var_with_entropy_hist.py` to analyze the relationship between the vBERT embedding and amino acid preference of IVA HA in DMS dataset.
+2. Run `immune_escape_and_binding_analysis/DMS_dataset_analysis/HA_preference/padding_dimensional_reduction_clustering_HA_H1_mutants.py` and `immune_escape_and_binding_analysis/DMS_dataset_analysis/HA_preference/KW_test_PCA1_var_with_entropy_hist.py` to analyze the relationship between the vBERT embedding and amino acid preference of IAV HA in DMS dataset.
 
     ```bash
     python immune_escape_and_binding_analysis/DMS_dataset_analysis/HA_preference/padding_dimensional_reduction_clustering_HA_H1_mutants.py
@@ -157,28 +163,64 @@ The parameters of HMM tokenizer of virtual dataset was also calculated with the 
     python immune_escape_and_binding_analysis/DMS_dataset_analysis/Spike_RBD_binding/RBD_mutants_PCA_bind_avg_each_site.py
     ```
 ## Establishment of GIVAl based on vBERT
-
-Run `vBERT_and_GIVAL/GIVAL/run_cmd.py` to input query sequence and flexibly conduct mapping, optimization of data and labels, training ResNet classifier and predicting to establish GIVAL based on the pretrained vBERT-optimized.
+Run `vBERT_and_GIVAL/GIVAL/map_before_blast.py` to create reference sequence set and query sequence fasta.
 
     ```bash
-    python vBERT_and_GIVAL/GIVAL/run_cmd.py SPANDLCYPGDFNDYEELKHLLSRTNHFEKIQIIPKSSWSNHDASSGVSSACPYHGRSSFFRNVVWLIKKNSAYPTIKRSYNNTNQEDLLVLWGIHHPNDAAEQTKLYQNPTTYISVGTSTLNQRLVPEIATRPKVNGQSGRMEFFWTILK
+    python vBERT_and_GIVAL/GIVAL/map_before_blast.py 
     ```
+
+Or run `vBERT_and_GIVAL/GIVAL/map_before_blast_with_whole_ref_ncbi.py` to create reference sequence set and query sequence fasta based on the large reference dataset (with all cleaned virus reference sequences from NCBI).
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/map_before_blast_with_whole_ref_ncbi.py 
+    ```
+
+Create BLAST+ database with reference sequences.
+
+    ```bash
+    D:\blast-2.16.0+\db>makeblastdb -in ref_seq_all.fasta -dbtype prot -out ref_seq_all
+    ```
+Perform sequence alignment with BLAST+ for query sequence.
+
+    ```bash
+   D:\blast-2.16.0+\db>blastp -query query.fasta -out seq_query.tsv -db ref_seq_all -outfmt 6 -evalue 1e-5 -num_threads 4
+    ```
+
+Move `seq_query.tsv` to  `vBERT_and_GIVAL/GIVAL/mapping_ref_seq` folder.
+
+Run `vBERT_and_GIVAL/GIVAL/run_cmd_final.py` to flexibly conduct mapping after BLAST, optimization of data and labels, training ResNet classifier and predicting of query sequence, so as to establish GIVAL based on the pretrained vBERT-optimized. Prediction for segment or complete sequence can be selected. Test version or normal version can be selected in `vBERT_and_GIVAL/GIVAL/run_cmd_final.py` for IAV segment predicting.
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/run_cmd_final.py segment
+    ```
+or
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/run_cmd_final.py complete
+    ```
+Please check `vBERT_and_GIVAL/GIVAL/result/df_loc.csv` for the identified virus and gene, `vBERT_and_GIVAL/GIVAL/result/test_resnet34_0619.csv` for the predicted dynamic label,  `vBERT_and_GIVAL/GIVAL/csv_file/new/'+method_name+'_with_new_label_sampled_and_shuffled.csv` (method_name =gene+'_for_predict_model' for IAV and method_name =virus+'_'+gene+'_for_predict_model' for others) for the information of each dynamic clustering label and `vBERT_and_GIVAL/GIVAL/result/test_pred_host.csv` for the predicted host.
 
 NOTE: HA RBD: SPANDLCYPGDFNDYEELKHLLSRTNHFEKIQIIPKSSWSNHDASSGVSSACPYHGRSSFFRNVVWLIKKNSAYPTIKRSYNNTNQEDLLVLWGIHHPNDAAEQTKLYQNPTTYISVGTSTLNQRLVPEIATRPKVNGQSGRMEFFWTILK
 Spike RBD: ATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSFVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPCNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNFNFNGLTGTG
 
-If more sequences from other viruses need to be added to the dataset of GIVAL, please add more data to `vBERT_and_GIVAL/GIVAL/csv_file/seq_all_family.csv` and reference sequences to `vBERT_and_GIVAL/GIVAL/csv_file/ref_all_family.csv`.
+If more sequences from other viruses need to be added to the dataset of GIVAL, please add more data to `vBERT_and_GIVAL/GIVAL/csv_file/seq_all_family.csv` and reference sequences to `vBERT_and_GIVAL/GIVAL/csv_file/ref_all_family.csv`. If more seuences from IAVs or CoVs need to be added, please add to the related csv file in the `vBERT_and_GIVAL/GIVAL/csv_file` folder.
+
+Run `vBERT_and_GIVAL/GIVAL/CoV_predicting_for_test_final_RBD_test_CoV_predicting.py` to predict the RBD strains of PDF-2180 and NeoCoV after input Spike RBD to establish the GIVAL predictor.
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/CoV_predicting_for_test_final_RBD_test_CoV_predicting.py 
+    ```
 
 ##Predicting based on GIVAL
 
 ### Performance evaluation of GIVAL
 
-1. Run `predicting/performance_evaluation/mapping_score/mapping_LD_score_calculate_HA_RBD.py` and `predicting/other_host_predicting/performance_evaluation/mapping_score/mapping_LD_score_calculate_S_RBD.py` to calculate the mapping score of HA RBD and Spike RBD.
+1. Run `vBERT_and_GIVAL/GIVAL/testset_creating.py` to create the test dataset for mapping benchmarking.
 
     ```bash
-    python  predicting/other_host_predicting/performance_evaluation/mapping_score/mapping_LD_score_calculate_HA_RBD.py
-    python  predicting/other_host_predicting/performance_evaluation/mapping_score/mapping_LD_score_calculate_S_RBD.py
+    python vBERT_and_GIVAL/GIVAL/testset_creating.py 
     ```
+Map the sequences of test dataset with customized BLAST+ and Diamond, respectively. Results and python scripts for processing the results were saved in `vBERT_and_GIVAL/GIVAL/mapping_ref_seq/mapping_results_blast_diamond_benchmarking/` folder.
 
 2. Run `predicting/performance_evaluation/independent_validation_set/result_labeling.py` and `predicting/performance_evaluation/independent_validation_set/Confusion_Mx_Roc.py` to evaluate the performance of GIVAL on the independent validation set.
 
@@ -219,9 +261,9 @@ If more sequences from other viruses need to be added to the dataset of GIVAL, p
     python  predicting/performance_evaluation/flexible_label/fault_tolerance/fault_tolerance.py
     ```
 
-### Prediction of IVA HA RBD of hosts other than human and avian
+### Prediction of IAV HA RBD of hosts other than human and avian
 
-1. Run `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_other_host_predicting.py` for host adaptation prediction of IVA HA RBD of hosts except for human and avian.
+1. Run `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_other_host_predicting.py` for host adaptation prediction of IAV HA RBD of hosts except for human and avian.
 
     ```bash
     python  vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_other_host_predicting.py
@@ -261,13 +303,83 @@ If more sequences from other viruses need to be added to the dataset of GIVAL, p
     python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N2/extract_H3N2_with_human.py
     python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N2/extract_H3N2_with_swine.py
     python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N2/for_ridge_plot_H3N2_all_reshape.py
-    predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N2/KW_test.py
+    python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N2/KW_test.py
     python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/extract_H3N8_with_canine.py
-    predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/extract_H3N8_with_equine.py
-    predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/extract_H3N8_with_human.py
+    python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/extract_H3N8_with_equine.py
+    python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/extract_H3N8_with_human.py
     python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/for_ridge_plot_H3N8_all_reshape.py
-    predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/KW_test.py
+    python predicting/structure_prediction/H3N2_H3N8_pdb_after_pymol/H3N8/KW_test.py
     ```
+
+### Inference of high-risk H5N1 mutations
+
+1. Run `predicting/high_risk_H5N1_inference/1extract_HA_RBD_for_bayes_human_avian.py`, `predicting/high_risk_H5N1_inference/2run_bayes_HA_RBD_99-250_from0_250_not_included_human_avian.py`, `predicting/high_risk_H5N1_inference/3dot_plot_avian_human_HA_RBD.py`, `predicting/high_risk_H5N1_inference/4logo_plot_HA_RBD.py`, `predicting/high_risk_H5N1_inference/5create_Texas_mutated_strains_based_on_bayes.py` for Bayes analysis of human- and avian-adaptive HA_RBD sequences and creating H5N1 mutations with top 30 sites mutated.
+
+    ```bash
+    python predicting/high_risk_H5N1_inference/1extract_HA_RBD_for_bayes_human_avian.py
+    python predicting/high_risk_H5N1_inference/2run_bayes_HA_RBD_99-250_from0_250_not_included_human_avian.py
+    python predicting/high_risk_H5N1_inference/3dot_plot_avian_human_HA_RBD.py
+    python predicting/high_risk_H5N1_inference/4logo_plot_HA_RBD.py
+    python predicting/high_risk_H5N1_inference/5create_Texas_mutated_strains_based_on_bayes.py
+    ```
+2. Run `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_30000.py` for predicting and quantifying the adaptation risk of the H5N1 mutations with top 30 sites (Bayes importance) mutated.
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_30000.py
+    ```
+
+3. Run `predicting/high_risk_H5N1_inference/final_variants/1single_site_mutate_back.py` to creating H5N1 mutations with single site mutated back for ablation.
+
+    ```bash
+    python predicting/final_variants/1single_site_mutate_back.py
+    ```
+
+4. Run `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_first_bayes_mutate_back.py` for predicting and quantifying the adaptation risk of the H5N1 mutations with single site mutated back for ablation.
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_first_bayes_mutate_back.py
+    ```
+
+5. Run `predicting/high_risk_H5N1_inference/final_variants/2site_mutate_effect_calculation.py`, `predicting/high_risk_H5N1_inference/final_variants/3other_site_mutate_back_for_origin_30000_seq_18sites.py`. `predicting/high_risk_H5N1_inference/final_variants/3other_site_mutate_back_for_origin_30000_seq_22sites.py` for calculating effect index of the top 30 sites and creating final mutations with 12 or 8 sites mutated.
+
+    ```bash
+    python predicting/high_risk_H5N1_inference/final_variants/2site_mutate_effect_calculation.py
+    python predicting/high_risk_H5N1_inference/final_variants/3other_site_mutate_back_for_origin_30000_seq_18sites.py
+    python predicting/high_risk_H5N1_inference/final_variants/3other_site_mutate_back_for_origin_30000_seq_22sites.py
+    ```
+
+6. Run `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_other_site_mutate_back_top8.py`, `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_other_site_mutate_back_top12.py` for predicting and quantifying the adaptation risk of the H5N1 mutations with top 8 and 12 sites (site effect index) mutated.
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_other_site_mutate_back_top8.py
+    python vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_H5N1_mutants_predicting_FC_prob_calculating_other_site_mutate_back_top12.py
+    ```
+
+7. Run `predicting/high_risk_H5N1_inference/final_variants/4finding_important_site_from_results_top8_sites.py`, `predicting/high_risk_H5N1_inference/final_variants/4finding_important_site_from_results_top12_sites.py`, `predicting/high_risk_H5N1_inference/final_variants/5create_supplementary_table_based_on_results_top8_sites.py`, `predicting/high_risk_H5N1_inference/final_variants/5create_supplementary_table_based_on_results_top12_sites.py`, `predicting/high_risk_H5N1_inference/final_variants/6most_often_mutate_aa_each_site_top12.py` for mutation analysis of the final selected mutations.
+
+    ```bash
+    python predicting/high_risk_H5N1_inference/final_variants/4finding_important_site_from_results_top8_sites.py
+    python predicting/high_risk_H5N1_inference/final_variants/4finding_important_site_from_results_top12_sites.py
+    python predicting/high_risk_H5N1_inference/final_variants/5create_supplementary_table_based_on_results_top8_sites.py
+    python predicting/high_risk_H5N1_inference/final_variants/5create_supplementary_table_based_on_results_top12_sites.py
+    python predicting/high_risk_H5N1_inference/final_variants/6most_often_mutate_aa_each_site_top12.py
+    ```
+
+### Prediction of IAV HA RBD from pandemics
+1. Establish GIVAL on HA RBD sequence (same as above) based on the normal version (the prediction above were based on the test version).
+2. Run `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_pandemics.py` to predict the adaptive host of each HA RBD sequence from the 2009 H1N1 and 1968 H3N2 pandemics.
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_pandemics.py 
+    ```
+### Prediction of IAV HA of IBV
+1. Establish GIVAL on HA complete sequence (input: IBV EPI_ISL_17236335) based on the normal complete version.
+2. Run `vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_IBV_whole_model.py` to predict the adaptive host of each HA complete sequence of IBV.
+
+    ```bash
+    python vBERT_and_GIVAL/GIVAL/IAV_predicting_for_test_final_IBV_whole_model.py 
+    ```
+
 
 ### Prediction of 10 genes of monkeypox sequences
 
