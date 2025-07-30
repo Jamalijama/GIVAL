@@ -7,7 +7,7 @@ Note: In the dataset or program files, 'country' represents country or area.
 
 The following is the operation process for all the code.
 
-This package provides an pipeline of data parsing, tokenization and segmentation of gene sequences, pretraining and embedding evaluation of vBERT and other language models, analysis of immune escape and receptor binding based on the vBERT embedding, establishment of GIVAl based on vBERT and predicting of IAV HA RBD and CoV Spike RBD sequences and application of GIVAL on IAVs, CoVs and monkeypox viruses.
+This package provides an pipeline of data parsing, tokenization and segmentation of gene sequences, pretraining and embedding evaluation of vBERT and other language models, analysis of immune escape and receptor binding based on the vBERT embedding, establishment of GIVAl based on vBERT and application of GIVAL on IAVs, CoVs and monkeypox viruses.
 
 ## Creating embedding npy file for the following steps
 Please extract embedding with the following commands before other steps.
