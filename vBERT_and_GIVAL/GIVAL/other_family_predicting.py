@@ -113,6 +113,8 @@ df_csv01 = pd.read_csv('./csv_file/df_all_mpox.csv')
 df_csv0 = pd.concat([df_csv00,df_csv01],ignore_index=True)
 df_csv0 = df_csv0[df_csv0['family']==family]
 df_all_information = df_csv0[df_csv0['protein']==gene]
+if len(df_all_information) == 0:
+    df_all_information = pd.read_csv('./csv_file/mapped_virus_dataset.csv')
 
 #label_1 = list(df_all_information['Host'])
 #maxlen = len(input_array[0])

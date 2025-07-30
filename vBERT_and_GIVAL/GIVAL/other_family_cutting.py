@@ -23,6 +23,28 @@ from torch import optim
 from datasets import *
 from module import *
 from resnet_34 import *
+
+def count_AApair (seq, Num0 = 400, freq = True):
+    amino_table = ['I', 'D', 'M', 'H', 'E', 'W', 'R', 'L', 'Y', 'Q', 'G', 'A', 'S', 'P', 'C', 'T', 'V', 'F', 'N', 'K']
+    AApair_table = [AA1 + AA2 for AA1 in amino_table for AA2 in amino_table]
+
+    seq_len = len(seq)
+    seq = seq.upper()
+    count_AApair = np.zeros(Num0)
+    for i in range(0, seq_len-1, 1):
+        cut = seq[i:i+2]
+        if cut in AApair_table:
+            AA = AApair_table.index(cut)
+            print(AA)
+            count_AApair[AA] += 1
+
+    if freq:
+        return np.hstack(count_AApair/seq_len)
+    else:
+        return np.hstack(count_AApair)
+
+
+
 df_loc = pd.read_csv('./result/df_loc.csv')
 df_loc = df_loc['loc'].tolist()
 family = df_loc[4]
@@ -99,6 +121,65 @@ print(gene)
 print(len(df_csv0))
 df_csv0 = df_csv0[df_csv0['protein']==gene]
 print(len(df_csv0))
+
+if len(df_csv0) == 0:
+    df_mapped_ref = pd.read_csv('./result/mapped_ref_seq.csv')
+    mapped_ref_lst = list(df_mapped_ref['mapped_ref'])
+    mapped_ref = str(mapped_ref_lst[0])
+    mapped_ref_len = len(mapped_ref)
+    mapped_ref_AApair_vec = count_AApair(mapped_ref)
+    df_csv02 = pd.read_csv('../../data/file/df_all_after_deduplication.csv')
+    df_csv02 = df_csv02[df_csv02['amino_seq_len_new']>=0.9*mapped_ref_len]
+    df_csv02 = df_csv02[df_csv02['amino_seq_len_new']<=1.1*mapped_ref_len]
+    df_csv02.to_csv('./csv_file/for_reindex.csv',index=False)
+    df_csv02 = pd.read_csv('./csv_file/for_reindex.csv',index=False)
+    AApair_vec_lst = [mapped_ref_AApair_vec]
+    for a in range(len(df_csv02)):
+        seq_aa = str(df_csv02.loc[a,'amino_seq_new'])
+        AApair_vec = count_AApair(seq_aa,freq=True)
+        AApair_vec_lst.append(AApair_vec)
+    AApair_vec_lst = np.array(AApair_vec_lst)
+    pca = PCA(n_components=2, random_state=10)
+    X_pca = pca.fit_transform(AApair_vec_lst)
+    df_pca = pd.DataFrame(X_pca, columns=['PCA1', 'PCA2'])
+    df_pca = (df_pca - df_pca.min()) / (df_pca.max() - df_pca.min())
+
+    # select_K_best
+    SSE_lst = []
+    for k in range(1, 12):
+        kmeans = MiniBatchKMeans(n_clusters=k, random_state=10).fit(df_pca)
+        SSE_lst.append(kmeans.inertia_)
+
+    SSE_interval_ratio_lst = []
+    for i in range(1, len(SSE_lst) - 1):
+        SSE_i_before = SSE_lst[i - 1]
+        SSE_i = SSE_lst[i]
+        SSE_i_after = SSE_lst[i + 1]
+        SSE_interval_before = SSE_i_before - SSE_i
+        SSE_interval_after = SSE_i - SSE_i_after
+        SSE_interval_ratio = SSE_interval_before / SSE_interval_after
+        SSE_interval_ratio_lst.append(SSE_interval_ratio)
+    for i0 in range(len(SSE_interval_ratio_lst)):
+        SSE_inter_rat = SSE_interval_ratio_lst[i0]
+        if SSE_inter_rat == max(SSE_interval_ratio_lst):
+            k_best = i0 + 2
+            break
+    print(k_best)
+
+    k_means_final = MiniBatchKMeans(n_clusters=k_best, random_state=10)
+    labels_final_lst = k_means_final.fit_predict(df_pca)
+
+    label_mapped_ref = labels_final_lst[0]
+    label_other_lst = list(labels_final_lst[1:])
+    df_csv02['MiniBatchKMeans_label_AApair'] = label_other_lst
+    df_csv02 = df_csv02[df_csv02['MiniBatchKMeans_label_AApair']==label_mapped_ref]
+    if len(df_csv02) >= 1000:
+        df_csv02 = sklearn.utils.shuffle(df_csv02,random_state=10)
+        df_csv02 = df_csv02.sample(n=1000,random_state=10)
+    df_csv02.to_csv('./csv_file/mapped_virus_dataset.csv',index=False)
+    df_csv0 = pd.read_csv('./csv_file/mapped_virus_dataset.csv')
+
+
 sentences = (df_csv0['cds_seq']).tolist()
 jieba.set_dictionary("dict_empty.txt")
 #sentences = sentences[:5]

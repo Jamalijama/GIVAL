@@ -129,108 +129,9 @@ print(len(sentences))
 #loc_lst = [37, 166]#start_from_1
 array = np.load(npy_file, allow_pickle=True)
 
-mat_cut_lst = []
-#df_loc = pd.read_csv('./result/df_'+gene+'_0619.csv')
+mat_cut_lst = list(array)
+
 loc_lst0 = list(df_loc['loc'])
-if loc_lst0[2] not in unmapped_seg:
-    loc_start = int(loc_lst0[0]) + 1
-    loc_end = int(loc_lst0[1])
-    loc_lst = [loc_start, loc_end]#start_from_1
-    
-    for i in range(len(sentences)):
-        current = 0
-        s = sentences[i]
-        matrix = array[i]
-        for j in range(len(s)):
-            word = s[j]
-            if current < loc_lst[0] and current + len(word) >= loc_lst[0]:
-                j_start = j
-                #breakimport tensorflow as tf
-            elif current < loc_lst[1] and current + len(word) >= loc_lst[1]:
-                j_end = j
-                mat_cut = matrix[j_start:(j_end+1)]
-                mat_cut_lst.append(mat_cut)
-                #print(j_start,'_',j_end)
-                break
-            #else:
-            current += len(word)
-else:
-    ref_seq_lst = []
-    indexx = seg_lst.index(loc_lst0[2])
-    file = './csv_file/' + loc_lst0[2] + '_without_test_set_DCR_human_avian_sampled_with_ref.csv'
-    df = pd.read_csv(file)
-    ref_seq_lst = df['CDS_' + cds_lst[indexx] + '_amino_seq'].tolist()
-    
-    target_seq = loc_lst0[3]
-    print(target_seq)
-    #target_seq = 'SSSDNGTCYPGDFIDYEELREQLSSVSSFERFEIFPKTSSWPNHDSNKGVTAACPHAGAKSFYKNLIWLVKKGNSYPKLSKSYINDKGKEVLVLWGIHHPSTSADQQSLYQNADAYVFVGTSRYSKKFKPEIAIRPKVRDREGRMNYYWTL'
-
-    shortcut = 20
-    print(len(ref_seq_lst), len(sentences))
-
-    ref_lev_res = [[] for _ in range(len(ref_seq_lst))]
-    cut_seq_lst = []
-    ###############################
-    #ref_seq_lst = ref_seq_lst[:3]
-    #sentences = sentences[:3]
-
-    for i, ref in enumerate(ref_seq_lst):
-        
-        start_cut = target_seq[:shortcut]
-        end_cut = target_seq[-shortcut:]
-        # print(len(start_cut), len(end_cut))
-        print(i)
-        start_lev_lst = []
-        end_lev_lst = []
-        for j in range(0, len(ref) - shortcut, 1):
-            start_lev_lst.append(lev_distance(start_cut, ref[j:j + shortcut]))
-            #end_lev_lst.append(lev_distance(end_cut, ref[j:j + shortcut]))
-        start = start_lev_lst.index(min(start_lev_lst))
-        #end = end_lev_lst.index(min(end_lev_lst))
-        # print(len(target_seq), len(ref[start:end + shortcut]))
-#        ref_lev_dis = lev_distance(target_seq, ref[start:end + shortcut])
-        ref_lev_res[i].append(start)
-        #ref_lev_res[i].append(end + shortcut)
-#        ref_lev_res[i].append(ref_lev_dis)
-        end = start + len(target_seq)
-        end_last_short_cut = ref[end-shortcut:end]
-        if lev_distance(end_cut, end_last_short_cut) < 6:
-            ref_lev_res[i].append(end)
-            end1 = end
-        else:
-            end_lev_lst1 = []
-            for k in range(-5,6):
-                end_last_short_cut1 = ref[end-shortcut+k:end+k]
-                end_lev_lst1.append(lev_distance(end_cut, end_last_short_cut1))
-            end1 = end + end_lev_lst1.index(min(end_lev_lst1)) - 5
-            ref_lev_res[i].append(end1)
-        try:
-            cut_seq = ref[start:end1]
-        except:
-            cut_seq = ref[start:end]
-        cut_seq_lst.append(cut_seq)
-    for i in range(len(sentences)):
-        print(i)
-        current = 0
-        s = sentences[i]
-        matrix = array[i]
-        loc_start = int(ref_lev_res[i][0]) + 1
-        loc_end = int(ref_lev_res[i][1])
-        loc_lst = [loc_start, loc_end]
-        print(loc_lst)
-        for j in range(len(s)):
-            word = s[j]
-            if current < loc_lst[0] and current + len(word) >= loc_lst[0]:
-                j_start = j
-                #breakimport tensorflow as tf
-            elif current < loc_lst[1] and current + len(word) >= loc_lst[1]:
-                j_end = j
-                mat_cut = matrix[j_start:(j_end+1)]
-                mat_cut_lst.append(mat_cut)
-                print(j_start,'_',j_end)
-                break
-            #else:
-            current += len(word)
 
 #extract_test_feature
 txt_file_test = './txt_npy_file/new/token_onlywith_HMM.txt'
@@ -245,24 +146,8 @@ loc_end = int(loc_lst0[1])
 loc_lst = [loc_start, loc_end]
 loc_lst_test = loc_lst
 array_test = np.load(npy_file_test, allow_pickle=True)
-mat_cut_lst_test = []
-for i_test in range(len(sentences_test)):
-    current_test = 0
-    s_test = sentences_test[i_test]
-    matrix_test = array_test[i_test]
-    for j_test in range(len(s_test)):
-        word_test = s_test[j_test]
-        if current_test < loc_lst_test[0] and current_test + len(word_test) >= loc_lst_test[0]:
-            j_start_test = j_test
-            #breakimport tensorflow as tf
-        elif current_test < loc_lst_test[1] and current_test + len(word_test) >= loc_lst_test[1]:
-            j_end_test = j_test
-            mat_cut_test = matrix_test[j_start_test:(j_end_test+1)]
-            mat_cut_lst_test.append(mat_cut_test)
-            #print(j_start,'_',j_end)
-            break
-        #else:
-        current_test += len(word_test)
+mat_cut_lst_test = list(array_test)
+
 
 
 #padding
@@ -339,7 +224,7 @@ df_all_information = pd.read_csv('./csv_file/'+gene+'_without_test_set_DCR_human
     #Serotype_new_lst.append(Serotype_new)
 
 df_all_information['composition_cut'] = list(X)
-df_all_information['cut_seq'] = cut_seq_lst
+#df_all_information['cut_seq'] = cut_seq_lst
 df_H5 = df_all_information[(df_all_information['Serotype_new_H']=='H5')]
 df_H5['clade'] = ['no' for a in range(len(df_H5))]
 df_H3 = df_all_information[(df_all_information['Serotype_new_H']=='H3')]
@@ -393,7 +278,7 @@ continent0 = df_all_information1['Continent'].tolist()
 year0 = df_all_information1['Year'].tolist()
 nt_seq0 = df_all_information1['CDS_4_nt_seq'].tolist()
 amino_seq0 = df_all_information1['CDS_4_amino_seq'].tolist()
-cut_seq0 = df_all_information1['cut_seq'].tolist()
+#cut_seq0 = df_all_information1['cut_seq'].tolist()
 true_label_origin0 = df_all_information1['Host'].tolist()
 true_label_origin = []
 for label_origin0 in true_label_origin0:
@@ -549,8 +434,8 @@ for mdl_batch_size in batch_size_lst:
         criterion = nn.CrossEntropyLoss()
 
         # Train and evaluate the model
-        threshold_train_acc = 0.95
-        threshold_valid_acc = 0.95
+        threshold_train_acc = 0.99
+        threshold_valid_acc = 0.99
         N_EPOCHS = 100
         n_splits = 3
         x = []
@@ -664,7 +549,7 @@ df1['year'] = year0
 df1['strain_name'] = strain_name0
 df1['nt_seq'] = nt_seq0
 df1['amino_seq'] = amino_seq0
-df1['cut_seq'] = cut_seq0
+#df1['cut_seq'] = cut_seq0
 cm = confusion_matrix(true_label_origin, pred_host_num_lst)
 print('final_cm=',cm)
 X = df_all_information1['composition_cut'].tolist()

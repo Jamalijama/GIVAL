@@ -121,7 +121,7 @@ df_pca = pd.DataFrame (X_pca,columns = ['PCA1','PCA2'])
 df_pca = (df_pca - df_pca.min()) / (df_pca.max() - df_pca.min())
 # select_K_best
 SSE_lst = []
-for k in range(1,10):
+for k in range(1,6):
     # print(k)
     kmeans = MiniBatchKMeans(n_clusters=k,random_state=10).fit(df_pca)
     SSE_lst.append(kmeans.inertia_)
@@ -306,7 +306,7 @@ prob_lst = [prob_.item() for prob_ in prob]
 df1 = pd.DataFrame()
 df1['pred'] = pred_lst
 df1['prob'] = prob_lst
-df1.to_csv('./result/test_resnet34_0523.csv', index=False)
+df1.to_csv('./result/test_resnet34_0619.csv', index=False)
 
 
 

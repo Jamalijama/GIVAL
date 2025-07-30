@@ -24,13 +24,13 @@ from datasets import *
 from module import *
 from resnet_34 import *
 df_loc = pd.read_csv('./result/df_loc.csv')
-loc_lst = df_loc['loc'].tolist()
-virus = loc_lst[4]
-gene = loc_lst[2]
+df_loc = df_loc['loc'].tolist()
+family = df_loc[4]
+gene = df_loc[2]
 
-unmapped_seg = ['ORF1ab']
-seg_lst = ['ORF1ab','S']
-cds_lst = ['ORF1ab','S']
+unmapped_seg = [gene]
+seg_lst = [gene]
+cds_lst = [gene]
 dict_gene_CDS = dict(zip(seg_lst,cds_lst))
 CDS_num = dict_gene_CDS[gene]
 #n_clustered = len(loc_lst)
@@ -86,24 +86,29 @@ sentences = []
 seq_cut_lst = []
 amino_num = 4
 df_loc = pd.read_csv('./result/df_loc.csv')
-fw1 = open('./txt_npy_file/new/for_predict_model_token_' + 'onlywith_HMM_'+gene+'.txt', 'w')
+fw1 = open('./txt_npy_file/new/for_predict_model_token_' + 'onlywith_HMM.txt', 'w')
 loc_lst0 = list(df_loc['loc'])
 
-df_csv0 = pd.read_csv('./csv_file/S_without_test_set_DCR_sampled_with_ref.csv')
-sentences = (df_csv0['CDS_'+gene+'_amino']).tolist()
+df_csv00 = pd.read_csv('./csv_file/seq_all_family.csv')
+df_csv01 = pd.read_csv('./csv_file/df_all_mpox.csv')
+df_csv0 = pd.concat([df_csv00,df_csv01],ignore_index=True)
+print(family)
+print(len(df_csv0))
+df_csv0 = df_csv0[df_csv0['family']==family]
+print(gene)
+print(len(df_csv0))
+df_csv0 = df_csv0[df_csv0['protein']==gene]
+print(len(df_csv0))
+sentences = (df_csv0['cds_seq']).tolist()
 jieba.set_dictionary("dict_empty.txt")
-
+#sentences = sentences[:5]
 
 if loc_lst0[2] not in unmapped_seg:
-    loc_start = int(loc_lst[0])
-    loc_end = int(loc_lst[1])
-    loc_lst = [loc_start, loc_end]#start_from_0
-    
     for i in range(len(sentences)):
         sentence = sentences[i]
-        amino_seq_new = sentence[loc_start:loc_end]
+        amino_seq_new = sentence
         seq_cut_lst.append(amino_seq_new)
-        amino_seq_new = amino_seq_new.replace('~','')
+
         sl = jieba.lcut(amino_seq_new,HMM=True)
 
         CDS_token_sentence_new = ' '.join(sl)
@@ -113,66 +118,20 @@ if loc_lst0[2] not in unmapped_seg:
 
 
 else:
-    ref_seq_lst = []
-    indexx = seg_lst.index(loc_lst0[2])
-    #file = './csv_file/' + loc_lst0[2] + '_without_test_set_DCR_sampled_with_ref.csv'
     df = df_csv0
-    ref_seq_lst = df['CDS_' + cds_lst[indexx] + '_amino'].tolist()
-    
-    target_seq = loc_lst0[3]
-    
-    shortcut = 20
-    print(len(ref_seq_lst), len(sentences))
-
-    ref_lev_res = [[] for _ in range(len(ref_seq_lst))]
-    
-    for i, ref in enumerate(ref_seq_lst):
-        start_cut = target_seq[:shortcut]
-        end_cut = target_seq[-shortcut:]
-        # print(len(start_cut), len(end_cut))
-        print(i)
-        start_lev_lst = []
-        end_lev_lst = []
-        for j in range(0, len(ref) - shortcut, 1):
-            start_lev_lst.append(lev_distance(start_cut, ref[j:j + shortcut]))
-            #end_lev_lst.append(lev_distance(end_cut, ref[j:j + shortcut]))
-        start = start_lev_lst.index(min(start_lev_lst))
-        #end = end_lev_lst.index(min(end_lev_lst))
-        # print(len(target_seq), len(ref[start:end + shortcut]))
-#        ref_lev_dis = lev_distance(target_seq, ref[start:end + shortcut])
-        ref_lev_res[i].append(start)
-        #ref_lev_res[i].append(end + shortcut)
-#        ref_lev_res[i].append(ref_lev_dis)
-        end = start + len(target_seq)
-        end_last_short_cut = ref[end-shortcut:end]
-        if lev_distance(end_cut, end_last_short_cut) < 6:
-            ref_lev_res[i].append(end)
-        else:
-            end_lev_lst1 = []
-            for k in range(-5,6):
-                end_last_short_cut1 = ref[end-shortcut+k:end+k]
-                end_lev_lst1.append(lev_distance(end_cut, end_last_short_cut1))
-            end1 = end + end_lev_lst1.index(min(end_lev_lst1)) - 5
-            ref_lev_res[i].append(end1)
-
-    #print(ref_lev_res)
-        
+    ref_seq_lst = df['cds_seq'].tolist()
     for i in range(len(sentences)):
         print(i)
-        current = 0
         sentence = sentences[i]
-        
-        loc_start = int(ref_lev_res[i][0])
-        loc_end = int(ref_lev_res[i][1])
-        amino_seq_new = sentence[loc_start:loc_end]
+        amino_seq_new = sentence
         seq_cut_lst.append(amino_seq_new)
 
         sl = jieba.lcut(amino_seq_new,HMM=True)
 
         CDS_token_sentence_new = ' '.join(sl)
         print(CDS_token_sentence_new, file=fw1)
-
+#df_csv0 = df_csv0[:5]
 df_csv0['cut_amino_seq'] = seq_cut_lst
-df_csv0.to_csv('./csv_file/new/' + loc_lst0[2] + '_without_test_set_DCR_sampled_with_ref_with_cut_seq.csv')
+df_csv0.to_csv('./csv_file/new/seq_all_family_with_cut.csv')
 fw1.close()
 

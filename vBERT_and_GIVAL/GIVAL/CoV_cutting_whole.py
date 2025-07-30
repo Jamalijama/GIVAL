@@ -95,13 +95,9 @@ jieba.set_dictionary("dict_empty.txt")
 
 
 if loc_lst0[2] not in unmapped_seg:
-    loc_start = int(loc_lst[0])
-    loc_end = int(loc_lst[1])
-    loc_lst = [loc_start, loc_end]#start_from_0
-    
     for i in range(len(sentences)):
         sentence = sentences[i]
-        amino_seq_new = sentence[loc_start:loc_end]
+        amino_seq_new = sentence
         seq_cut_lst.append(amino_seq_new)
         amino_seq_new = amino_seq_new.replace('~','')
         sl = jieba.lcut(amino_seq_new,HMM=True)
@@ -112,59 +108,11 @@ if loc_lst0[2] not in unmapped_seg:
 
 
 
-else:
-    ref_seq_lst = []
-    indexx = seg_lst.index(loc_lst0[2])
-    #file = './csv_file/' + loc_lst0[2] + '_without_test_set_DCR_sampled_with_ref.csv'
-    df = df_csv0
-    ref_seq_lst = df['CDS_' + cds_lst[indexx] + '_amino'].tolist()
-    
-    target_seq = loc_lst0[3]
-    
-    shortcut = 20
-    print(len(ref_seq_lst), len(sentences))
-
-    ref_lev_res = [[] for _ in range(len(ref_seq_lst))]
-    
-    for i, ref in enumerate(ref_seq_lst):
-        start_cut = target_seq[:shortcut]
-        end_cut = target_seq[-shortcut:]
-        # print(len(start_cut), len(end_cut))
-        print(i)
-        start_lev_lst = []
-        end_lev_lst = []
-        for j in range(0, len(ref) - shortcut, 1):
-            start_lev_lst.append(lev_distance(start_cut, ref[j:j + shortcut]))
-            #end_lev_lst.append(lev_distance(end_cut, ref[j:j + shortcut]))
-        start = start_lev_lst.index(min(start_lev_lst))
-        #end = end_lev_lst.index(min(end_lev_lst))
-        # print(len(target_seq), len(ref[start:end + shortcut]))
-#        ref_lev_dis = lev_distance(target_seq, ref[start:end + shortcut])
-        ref_lev_res[i].append(start)
-        #ref_lev_res[i].append(end + shortcut)
-#        ref_lev_res[i].append(ref_lev_dis)
-        end = start + len(target_seq)
-        end_last_short_cut = ref[end-shortcut:end]
-        if lev_distance(end_cut, end_last_short_cut) < 6:
-            ref_lev_res[i].append(end)
-        else:
-            end_lev_lst1 = []
-            for k in range(-5,6):
-                end_last_short_cut1 = ref[end-shortcut+k:end+k]
-                end_lev_lst1.append(lev_distance(end_cut, end_last_short_cut1))
-            end1 = end + end_lev_lst1.index(min(end_lev_lst1)) - 5
-            ref_lev_res[i].append(end1)
-
-    #print(ref_lev_res)
-        
+else:   
     for i in range(len(sentences)):
         print(i)
-        current = 0
         sentence = sentences[i]
-        
-        loc_start = int(ref_lev_res[i][0])
-        loc_end = int(ref_lev_res[i][1])
-        amino_seq_new = sentence[loc_start:loc_end]
+        amino_seq_new = sentence
         seq_cut_lst.append(amino_seq_new)
 
         sl = jieba.lcut(amino_seq_new,HMM=True)

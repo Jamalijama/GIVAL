@@ -192,6 +192,7 @@ else:
         end_last_short_cut = ref[end-shortcut:end]
         if lev_distance(end_cut, end_last_short_cut) < 6:
             ref_lev_res[i].append(end)
+            #end1 = end
         else:
             end_lev_lst1 = []
             for k in range(-5,6):
@@ -199,7 +200,10 @@ else:
                 end_lev_lst1.append(lev_distance(end_cut, end_last_short_cut1))
             end1 = end + end_lev_lst1.index(min(end_lev_lst1)) - 5
             ref_lev_res[i].append(end1)
-        cut_seq = ref[start:end1]
+        try:
+            cut_seq = ref[start:end1]
+        except:
+            cut_seq = ref[start:end]
         cut_seq_lst.append(cut_seq)
     for i in range(len(sentences)):
         print(i)
@@ -502,6 +506,9 @@ def get_k_fold_data(k, i, X, y):
 
 dropout = 0.2
 inputs = df_sample['composition_cut'].tolist()
+f0 = open('./pkl_file/composition_cut/train_set_composition_cut.pkl','wb')
+pickle.dump(inputs ,f0)
+
 inputs = np.array(inputs).astype(np.float64)
 labels = df_sample['MiniBatchKMeans_label_cut'].tolist()
 num_classes = len(set(labels))
@@ -635,6 +642,7 @@ for pred0 in pred_lst:
     pred_host_num_lst.append(pred_host_num)
 
 df1 = pd.DataFrame()
+df1['pred0'] = pred_lst
 df1['pred'] = pred_host_num_lst
 df1['prob_cluster'] = prob_lst
 df1['true_label_num'] = true_label_origin
