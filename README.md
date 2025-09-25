@@ -382,6 +382,7 @@ Map the sequences of test dataset with customized BLAST+ and Diamond, respective
 
 
 ### Prediction of 10 genes of monkeypox sequences
+Note: The genome sequences and associated metadata used in this monkeypox virus analysis obtained from GISAID (https://gisaid.org/) were accessed on October 22, 2024. We gratefully acknowledge all data contributors, i.e., the authors and their originating laboratories responsible for obtaining the specimens, and their submitting laboratories for generating the genetic sequence and metadata and sharing via the GISAID Initiative, on which this research is based. 
 
 1. Run `predicting/monkeypox_predicting/tokenization/1tokenization_for_10gene_gisaid_trainset.py`, `predicting/monkeypox_predicting/tokenization/1tokenization_for_10gene_gisaid_validset.py`, `predicting/monkeypox_predicting/tokenization/1tokenization_for_10gene_ncbi_validset.py`, `predicting/monkeypox_predicting/tokenization/1tokenization_for_sampling_10gene_ncbi_valid_all1.py` and `predicting/monkeypox_predicting/tokenization/1tokenization_for_sampling_10gene_ncbi_valid_all2.py` for sequence tokenization of training, validation and predicing dataset.
 
